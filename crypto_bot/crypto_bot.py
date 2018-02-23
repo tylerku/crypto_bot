@@ -16,13 +16,17 @@ class CryptoBot(object):
 
 	def start(self):
 
+		r = get_algorithm_data()
+		res = r.json()
+		algorithm_data = res['data']
+
 		prev_hint = None
 		start_investment = 500
 		current_investment = start_investment
 		current_investment_btc_price = None
 		start_investment_btc_price = None
 		print("Initial investment: ", start_investment)
-		print("Initial price: ", current_investment_btc_price)
+		print("Initial price: ", algorithm_data[0]['price'])
 		print("Start Time: ", datetime.datetime.now())
 		print(" ")
 
