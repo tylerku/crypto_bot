@@ -22,6 +22,9 @@ class CryptoBot(object):
 		current_investment_btc_price = None
 		start_investment_btc_price = None
 		print("Initial investment: ", start_investment)
+		print("Initial price: ", current_investment_btc_price)
+		print("Start Time: ", datetime.datetime.now())
+		print(" ")
 
 		while(True):
 
@@ -31,7 +34,7 @@ class CryptoBot(object):
 			res = r.json()
 			algorithm_data = res['data']
 
-			# Calculate Neuryx Strength Index
+			# Calculate Strength Index
 			hint = None
 			score_sum = 0
 			score_count = 0
@@ -85,7 +88,7 @@ class CryptoBot(object):
 
 
 			if prev_hint != hint and (hint == "BUY" or hint == "SELL"):
-				print(hint, "on Neuryx")
+				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime())
 				print("% Gain on current investment: ", current_percent_gain * 100, "%")
 				print("Dollar Gains from current investment: $", current_dollar_gains)
 				print("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
