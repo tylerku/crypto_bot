@@ -84,7 +84,7 @@ class CryptoBot(object):
 				neuryx_hint = "OVERSOLD"
 
 
-			if prev_hint != neuryx_hint and (neuryx_hint == "BUY" or neuryx_hint == "SELL") and :
+			if prev_hint != neuryx_hint and (neuryx_hint == "BUY" or neuryx_hint == "SELL"):
 				print(neuryx_hint, "on Neuryx")
 				print("% Gain on current investment: ", current_percent_gain * 100, "%")
 				print("Dollar Gains from current investment: $", current_dollar_gains)
