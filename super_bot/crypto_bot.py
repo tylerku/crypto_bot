@@ -66,7 +66,7 @@ class CryptoBot(object):
 
 				prev_hint = neuryx_hint
 				#send_notification(neuryx_hint, neuryx_strength_index)
-				make_noise(neuryx_hint)
+				self.make_noise(neuryx_hint)
 				# hook up to GDAX API here for automation
 
 			# Only check every 5 seconds
