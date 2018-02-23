@@ -1,7 +1,7 @@
 # crypto_bot
-Bot that automatically buys and sells bitcoin
+Bot that simulates automated bitcoin transactions
 
 NOTE: In order to run this you will need the hidden files that connect to the APIs
 
-To Use:
-python3 -m crypto_bot
+Usage:
+$ python3 -m crypto_bot
