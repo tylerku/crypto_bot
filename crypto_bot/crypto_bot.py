@@ -3,7 +3,7 @@ import os
 from subprocess import call
 import datetime
 from .twilio_wizard import send_notification
-from .api_wizard import get_algorithm_data
+from .api_wizard import get_algorithm_data, get_price_data
 
 class CryptoBot(object):
 
@@ -26,6 +26,12 @@ class CryptoBot(object):
 		current_investment_btc_price = None
 		start_investment_btc_price = None
 		hint = None
+
+		BUY_RSI = 58
+		SELL_RSI = 62
+		OVERBOUGHT_RSI = 80
+		OVERSOLD_RSI = 20
+
 		print("Initial investment: ", start_investment)
 		print("Initial price: ", algorithm_data[0]['price'])
 		print("Start Time: ", datetime.datetime.now())
@@ -34,40 +40,53 @@ class CryptoBot(object):
 		while(True):
 
 			# Get data from API
+			alg_data = get_algorithm_data()
+			alg_res = alg_data.json()
 
-			r = get_algorithm_data()
-			res = r.json()
-			algorithm_data = res['data']
+			price_data = get_price_data()
+			price_res = price_data.json()
 
 			# Calculate Strength Index
 			score_sum = 0
 			score_count = 0
-			current_price = algorithm_data[0]['price']
 			strength_index = None
+
+			# Catch errors from bad data to avoid crash
+			try:
+				current_price = price_res['btc_price']['price']
+				algorithm_data = alg_res['data']
+				for alg_data in algorithm_data:
+					if alg_data['rsi'] != "0":
+						score_sum += float(alg_data['rsi'])
+						score_count += 1
+				strength_index = score_sum / score_count
+				print("BTC PRICE: ", current_price)
+				print("RSI: ", strength_index)
+			except KeyError:
+				print("KeyError, trying again...")
+				time.sleep(5)
+				continue
+			except:
+				print("Caught an unknown error type...")
+				time.sleep(5)
+				continue
 
 			# Remember the initial investment price
 			if start_investment_btc_price == None:
 				start_investment_btc_price = float(current_price)
 
-
-			for alg_data in algorithm_data:
-				if alg_data['rsi'] != "0":
-					score_sum += float(alg_data['rsi'])
-					score_count += 1
-			strength_index = score_sum / score_count
-
-			current_percent_gain = None 
-			current_dollar_gains = None 
-			dollar_gains_from_start = None 
+			current_percent_gain = None
+			current_dollar_gains = None
+			dollar_gains_from_start = None
 			percent_gain_from_start = None
 
-			if strength_index > 0 and strength_index < 60:
+			if strength_index > BUY_RSI and strength_index < SELL_RSI:
 				if hint == "KEEP":
 					time.sleep(5)
 					continue
 				print("KEEP")
 				hint = "KEEP"
-			elif strength_index >= 60 and strength_index < 80:
+			elif strength_index >= SELL_RSI and strength_index < OVERBOUGHT_RSI:
 				if hint == "SELL" or current_investment_btc_price == None:
 					time.sleep(5)
 					continue
@@ -80,7 +99,7 @@ class CryptoBot(object):
 				dollar_gains_from_start = (current_investment - start_investment) + current_dollar_gains
 				percent_gain_from_start = (dollar_gains_from_start + start_investment) / start_investment - 1
 				current_investment += current_dollar_gains
-			elif strength_index <= 40 and strength_index > 20:
+			elif strength_index <= BUY_RSI and strength_index > OVERSOLD_RSI:
 				if hint == "BUY":
 					time.sleep(5)
 					continue
@@ -93,9 +112,9 @@ class CryptoBot(object):
 				current_dollar_gains = current_investment * current_percent_gain
 				dollar_gains_from_start = (current_investment - start_investment) + current_dollar_gains
 				percent_gain_from_start = (dollar_gains_from_start + start_investment) / start_investment - 1
-			elif strength_index >= 80:
+			elif strength_index >= OVERBOUGHT_RSI:
 				hint = "OVERBOUGHT"
-			elif strength_index <= 20:
+			elif strength_index <= OVERSOLD_RSI:
 				hint = "OVERSOLD"
 
 
@@ -113,4 +132,3 @@ class CryptoBot(object):
 
 			# Only check every 5 seconds
 			time.sleep(5)
-
