@@ -25,6 +25,7 @@ class CryptoBot(object):
 		current_investment = start_investment
 		current_investment_btc_price = None
 		start_investment_btc_price = None
+		hint = None
 		print("Initial investment: ", start_investment)
 		print("Initial price: ", algorithm_data[0]['price'])
 		print("Start Time: ", datetime.datetime.now())
@@ -39,7 +40,6 @@ class CryptoBot(object):
 			algorithm_data = res['data']
 
 			# Calculate Strength Index
-			hint = None
 			score_sum = 0
 			score_count = 0
 			current_price = algorithm_data[0]['price']
@@ -61,13 +61,19 @@ class CryptoBot(object):
 			dollar_gains_from_start = None 
 			percent_gain_from_start = None
 
-			if strength_index > 40 and strength_index < 60:
-				hint = "KEEP"
-			elif strength_index >= 60 and strength_index < 80:
-				if hint == "SELL" or hint == None:
+			if strength_index > 0 and strength_index < 60:
+				if hint == "KEEP":
 					time.sleep(5)
 					continue
+				print("KEEP")
+				hint = "KEEP"
+			elif strength_index >= 60 and strength_index < 80:
+				if hint == "SELL" or current_investment_btc_price == None:
+					time.sleep(5)
+					continue
+				print("SELL")
 				hint = "SELL"
+				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain
 				current_investment_btc_price = None
@@ -78,9 +84,11 @@ class CryptoBot(object):
 				if hint == "BUY":
 					time.sleep(5)
 					continue
+				print("BUY")
 				hint = "BUY"
 				if current_investment_btc_price == None:
 					current_investment_btc_price = float(current_price)
+				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain
 				dollar_gains_from_start = (current_investment - start_investment) + current_dollar_gains
@@ -92,7 +100,6 @@ class CryptoBot(object):
 
 
 			if prev_hint != hint and (hint == "BUY" or hint == "SELL"):
-				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime())
 				print("% Gain on current investment: ", current_percent_gain * 100, "%")
 				print("Dollar Gains from current investment: $", current_dollar_gains)
 				print("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
