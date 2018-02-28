@@ -29,8 +29,8 @@ class CryptoBot(object):
 		start_investment_btc_price = None
 		hint = None
 
-		BUY_RSI = 58
-		SELL_RSI = 62
+		BUY_RSI = 45
+		SELL_RSI = 55
 		OVERBOUGHT_RSI = 80
 		OVERSOLD_RSI = 20
 
@@ -87,13 +87,11 @@ class CryptoBot(object):
 				if hint == "KEEP":
 					time.sleep(5)
 					continue
-				log_output("KEEP")
 				hint = "KEEP"
 			elif strength_index >= SELL_RSI and strength_index < OVERBOUGHT_RSI:
 				if hint == "SELL" or current_investment_btc_price == None:
 					time.sleep(5)
 					continue
-				log_output("SELL")
 				hint = "SELL"
 				log_output(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
@@ -125,10 +123,9 @@ class CryptoBot(object):
 				log_output("Dollar Gains from current investment: $", current_dollar_gains)
 				log_output("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
 				log_output("Dollar Gains From Beginning: $", dollar_gains_from_start)
-				log_output("\n")
 
 				prev_hint = hint
-				self.make_noise(hint)
+				#self.make_noise(hint)
 				#send_notification(hint, strength_index)
 				# hook up to GDAX API here for automation
 
