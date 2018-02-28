@@ -1,6 +1,4 @@
-from .logger import log_output
+from crypto_bot.gdax_wizard import test
 
 def test1():
-    x = 6
-    y = "YOLO:"
-    log_output(y, x)
+	test()

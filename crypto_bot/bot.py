@@ -103,13 +103,12 @@ class CryptoBot(object):
 				percent_gain_from_start = (dollar_gains_from_start + start_investment) / start_investment - 1
 				current_investment += current_dollar_gains
 			elif strength_index <= BUY_RSI and strength_index > OVERSOLD_RSI:
-				if hint == "BUY":
+				#if hint == "BUY":
+				if current_investment_btc_price != None
 					time.sleep(5)
 					continue
-				log_output("BUY")
 				hint = "BUY"
-				if current_investment_btc_price == None:
-					current_investment_btc_price = float(current_price)
+				current_investment_btc_price = float(current_price)
 				log_output(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain

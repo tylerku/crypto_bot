@@ -2,5 +2,6 @@ api_wizard.py
 twilio_wizard.py
 crypto_bot/__pycache__/
 crypto_bot/logs/*
+crypto_bot/tests/__pycache__/
 
 
