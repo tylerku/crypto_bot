@@ -2,6 +2,7 @@ import os
 
 #Set Environment Variables
 cwd = os.getcwd() + '/crypto_bot/'
-print("CWD: ", cwd)
-os.environ["LOGS"] = cwd + 'logs/'
-print(os.environ["LOGS"])
+logs_dir = cwd + 'logs/'
+os.environ["LOGS"] = logs_dir
+if not os.path.isdir(logs_dir):
+    os.makedirs(logs_dir)
