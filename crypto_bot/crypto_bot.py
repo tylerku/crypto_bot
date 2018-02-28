@@ -2,8 +2,10 @@ import time
 import os
 from subprocess import call
 import datetime
+
 from .twilio_wizard import send_notification
 from .api_wizard import get_algorithm_data, get_price_data
+from .logger import log_output, clear_output_log
 
 class CryptoBot(object):
 
@@ -32,10 +34,11 @@ class CryptoBot(object):
 		OVERBOUGHT_RSI = 80
 		OVERSOLD_RSI = 20
 
-		print("Initial investment: ", start_investment)
-		print("Initial price: ", algorithm_data[0]['price'])
-		print("Start Time: ", datetime.datetime.now())
-		print(" ")
+		clear_output_log()
+		log_output("Initial investment: ", start_investment)
+		log_output("Initial price: ", algorithm_data[0]['price'])
+		log_output("Start Time: ", (datetime.datetime.now()))
+		log_output("\n")
 
 		while(True):
 
@@ -60,14 +63,14 @@ class CryptoBot(object):
 						score_sum += float(alg_data['rsi'])
 						score_count += 1
 				strength_index = score_sum / score_count
-				print("BTC PRICE: ", current_price)
-				print("RSI: ", strength_index)
+				#log_output("BTC PRICE: ", current_price)
+				#log_output("RSI: ", strength_index)
 			except KeyError:
-				print("KeyError, trying again...")
+				log_output("KeyError, trying again...")
 				time.sleep(5)
 				continue
 			except:
-				print("Caught an unknown error type...")
+				log_output("Caught an unknown error type...")
 				time.sleep(5)
 				continue
 
@@ -84,15 +87,15 @@ class CryptoBot(object):
 				if hint == "KEEP":
 					time.sleep(5)
 					continue
-				print("KEEP")
+				log_output("KEEP")
 				hint = "KEEP"
 			elif strength_index >= SELL_RSI and strength_index < OVERBOUGHT_RSI:
 				if hint == "SELL" or current_investment_btc_price == None:
 					time.sleep(5)
 					continue
-				print("SELL")
+				log_output("SELL")
 				hint = "SELL"
-				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
+				log_output(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain
 				current_investment_btc_price = None
@@ -103,11 +106,11 @@ class CryptoBot(object):
 				if hint == "BUY":
 					time.sleep(5)
 					continue
-				print("BUY")
+				log_output("BUY")
 				hint = "BUY"
 				if current_investment_btc_price == None:
 					current_investment_btc_price = float(current_price)
-				print(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
+				log_output(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain
 				dollar_gains_from_start = (current_investment - start_investment) + current_dollar_gains
@@ -119,11 +122,11 @@ class CryptoBot(object):
 
 
 			if prev_hint != hint and (hint == "BUY" or hint == "SELL"):
-				print("% Gain on current investment: ", current_percent_gain * 100, "%")
-				print("Dollar Gains from current investment: $", current_dollar_gains)
-				print("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
-				print("Dollar Gains From Beginning: $", dollar_gains_from_start)
-				print(" ")
+				log_output("% Gain on current investment: ", current_percent_gain * 100, "%")
+				log_output("Dollar Gains from current investment: $", current_dollar_gains)
+				log_output("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
+				log_output("Dollar Gains From Beginning: $", dollar_gains_from_start)
+				log_output("\n")
 
 				prev_hint = hint
 				self.make_noise(hint)
