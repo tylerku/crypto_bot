@@ -3,9 +3,9 @@ import os
 from subprocess import call
 import datetime
 
-from .twilio_wizard import send_notification
-from .api_wizard import get_algorithm_data, get_price_data
-from .logger import log_output, clear_output_log
+from crypto_bot.twilio_wizard import send_notification
+from crypto_bot.api_wizard import get_algorithm_data, get_price_data
+from crypto_bot.logger import log_output, clear_output_log
 
 class CryptoBot(object):
 
