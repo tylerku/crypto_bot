@@ -3,8 +3,8 @@ from crypto_bot.tests.test import test1
 
 def main():
 	bot = CryptoBot()
-	bot.start()
-	#test1()
+	#bot.start()
+	test1()
 
 
 if __name__ == '__main__':
