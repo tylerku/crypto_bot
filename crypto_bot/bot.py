@@ -62,7 +62,6 @@ class CryptoBot(object):
 				composite_rsi = score_sum / score_count
 				sentiment_score = self.tc.btc_sentiment_score()
 				strength_index = calculate_strength_index(composite_rsi, sentiment_score)
-				print(strength_index)
 				#log_output("BTC PRICE: ", current_price)
 				#log_output("RSI: ", strength_index)
 			except KeyError as e:
@@ -122,9 +121,12 @@ class CryptoBot(object):
 
 
 			if prev_hint != hint and (hint == "BUY" or hint == "SELL"):
-				log_output("% Gain on current investment: ", current_percent_gain * 100, "%")
+				log_output("Composite RSI: ", composite_rsi)
+				log_output("Sentiment Score: ", sentiment_score)
+				log_output("Strength Index: ", strength_index)
+				log_output("Gain on current investment: ", current_percent_gain * 100, "%")
 				log_output("Dollar Gains from current investment: $", current_dollar_gains)
-				log_output("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
+				log_output("Gain From Beginning: ", percent_gain_from_start * 100, "%")
 				log_output("Dollar Gains From Beginning: $", dollar_gains_from_start)
 				log_output(" ")
 
