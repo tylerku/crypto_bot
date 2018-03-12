@@ -23,7 +23,7 @@ class CryptoBot(object):
 		algorithm_data = res['data']
 
 		prev_hint = None
-		start_investment = 500
+		start_investment = 1000
 		current_investment = start_investment
 		current_investment_btc_price = None
 		start_investment_btc_price = None
@@ -65,8 +65,10 @@ class CryptoBot(object):
 				strength_index = score_sum / score_count
 				#log_output("BTC PRICE: ", current_price)
 				#log_output("RSI: ", strength_index)
-			except KeyError:
-				log_output("KeyError, trying again...")
+			except KeyError as e:
+                                log_output(str(e))
+                                log_output("Key Error... Trying again...")
+
 				time.sleep(5)
 				continue
 			except:
@@ -123,6 +125,7 @@ class CryptoBot(object):
 				log_output("Dollar Gains from current investment: $", current_dollar_gains)
 				log_output("% Gain From Beginning: ", percent_gain_from_start * 100, "%")
 				log_output("Dollar Gains From Beginning: $", dollar_gains_from_start)
+				log_output(" ")
 
 				prev_hint = hint
 				#self.make_noise(hint)
