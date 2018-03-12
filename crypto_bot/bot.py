@@ -66,8 +66,8 @@ class CryptoBot(object):
 				#log_output("BTC PRICE: ", current_price)
 				#log_output("RSI: ", strength_index)
 			except KeyError as e:
-                                log_output(str(e))
-                                log_output("Key Error... Trying again...")
+				log_output(str(e))
+				log_output("Key Error... Trying again...")
 
 				time.sleep(5)
 				continue
