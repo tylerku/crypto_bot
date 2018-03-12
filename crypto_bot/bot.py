@@ -109,7 +109,7 @@ class CryptoBot(object):
 					continue
 				hint = "BUY"
 				current_investment_btc_price = float(current_price)
-				log_output(hint, " Bitcoin! Price:", current_investment_btc_price, " Time: ", datetime.datetime.now())
+				log_output(hint, " Bitcoin! Price:", current_investment_btc_price)
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
 				current_dollar_gains = current_investment * current_percent_gain
 				dollar_gains_from_start = (current_investment - start_investment) + current_dollar_gains
@@ -121,13 +121,14 @@ class CryptoBot(object):
 
 
 			if prev_hint != hint and (hint == "BUY" or hint == "SELL"):
-				log_output("Composite RSI: ", composite_rsi)
-				log_output("Sentiment Score: ", sentiment_score)
-				log_output("Strength Index: ", strength_index)
-				log_output("Gain on current investment: ", current_percent_gain * 100, "%")
-				log_output("Dollar Gains from current investment: $", current_dollar_gains)
-				log_output("Gain From Beginning: ", percent_gain_from_start * 100, "%")
-				log_output("Dollar Gains From Beginning: $", dollar_gains_from_start)
+				log_output("Time: ", datetime.datetime.now())
+				log_output("Composite RSI: ", round(composite_rsi,2))
+				log_output("Sentiment Score: ", round(sentiment_score,2))
+				log_output("Strength Index: ", round(strength_index,2))
+				log_output("Gain on current investment: ", round(current_percent_gain,4) * 100, "%")
+				log_output("Dollar Gains from current investment: $", round(current_dollar_gains,2))
+				log_output("Gain From Beginning: ", round(percent_gain_from_start,4) * 100, "%")
+				log_output("Dollar Gains From Beginning: $", round(dollar_gains_from_start,2))
 				log_output(" ")
 
 				prev_hint = hint
