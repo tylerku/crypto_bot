@@ -4,17 +4,17 @@ from subprocess import call
 import datetime
 
 from crypto_bot.twilio_wizard import send_notification
-from crypto_bot.api_wizard import get_algorithm_data, get_price_data
+from crypto_bot.api_wizard import get_algorithm_data, get_btc_price
 from crypto_bot.logger import log_output, clear_output_log
+from crypto_bot.twitter_wizard import TwitterClient
 
 class CryptoBot(object):
 
 	def __init__(self):#, simulation=True, investment=500):
-		pass
+		self.tc = TwitterClient()
 
 	def make_noise(self, hint):
 		call(['say', hint + ' bitcoin on neurex'])
-
 
 	def start(self):
 
@@ -46,9 +46,6 @@ class CryptoBot(object):
 			alg_data = get_algorithm_data()
 			alg_res = alg_data.json()
 
-			price_data = get_price_data()
-			price_res = price_data.json()
-
 			# Calculate Strength Index
 			score_sum = 0
 			score_count = 0
@@ -56,13 +53,16 @@ class CryptoBot(object):
 
 			# Catch errors from bad data to avoid crash
 			try:
-				current_price = price_res['btc_price']['price']
+				current_price = get_btc_price()
 				algorithm_data = alg_res['data']
 				for alg_data in algorithm_data:
 					if alg_data['rsi'] != "0":
 						score_sum += float(alg_data['rsi'])
 						score_count += 1
-				strength_index = score_sum / score_count
+				composite_rsi = score_sum / score_count
+				sentiment_score = self.tc.btc_sentiment_score()
+				strength_index = calculate_strength_index(composite_rsi, sentiment_score)
+				print(strength_index)
 				#log_output("BTC PRICE: ", current_price)
 				#log_output("RSI: ", strength_index)
 			except KeyError as e:
@@ -94,6 +94,7 @@ class CryptoBot(object):
 				if hint == "SELL" or current_investment_btc_price == None:
 					time.sleep(5)
 					continue
+				#TODO: ride out the psoitive rsi before selling to maximize gains
 				hint = "SELL"
 				log_output(hint, " Bitcoin! Price:", current_price, " Time: ", datetime.datetime.now())
 				current_percent_gain = (float(current_price) / current_investment_btc_price - 1) # as a decimal
@@ -134,3 +135,6 @@ class CryptoBot(object):
 
 			# Only check every 5 seconds
 			time.sleep(5)
+
+def calculate_strength_index(rsi, sentiment_score):
+	return rsi + ((sentiment_score - 50) / 5)
