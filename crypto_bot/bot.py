@@ -6,15 +6,15 @@ import datetime
 from crypto_bot.twilio_wizard import send_notification
 from crypto_bot.api_wizard import get_algorithm_data, get_btc_price
 from crypto_bot.logger import log_output, clear_output_log
+from crypto_bot.twitter_wizard import TwitterClient
 
 class CryptoBot(object):
 
 	def __init__(self):#, simulation=True, investment=500):
-		pass
+		self.tc = TwitterClient()
 
 	def make_noise(self, hint):
 		call(['say', hint + ' bitcoin on neurex'])
-
 
 	def start(self):
 
@@ -59,7 +59,10 @@ class CryptoBot(object):
 					if alg_data['rsi'] != "0":
 						score_sum += float(alg_data['rsi'])
 						score_count += 1
-				strength_index = score_sum / score_count
+				composite_rsi = score_sum / score_count
+				sentiment_score = self.tc.btc_sentiment_score()
+				strength_index = calculate_strength_index(composite_rsi, sentiment_score)
+				print(strength_index)
 				#log_output("BTC PRICE: ", current_price)
 				#log_output("RSI: ", strength_index)
 			except KeyError:
@@ -129,3 +132,6 @@ class CryptoBot(object):
 
 			# Only check every 5 seconds
 			time.sleep(5)
+
+def calculate_strength_index(rsi, sentiment_score):
+	return rsi + ((sentiment_score - 50) / 5)
